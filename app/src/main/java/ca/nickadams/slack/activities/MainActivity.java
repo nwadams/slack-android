@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (auth.ok) {
                     startActivity(ChannelsActivity.intentForAuth(MainActivity.this, auth));
+                    finish();
                 }
             }
 

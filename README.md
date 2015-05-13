@@ -1,2 +1,0 @@
-# slack
-android slack cleint

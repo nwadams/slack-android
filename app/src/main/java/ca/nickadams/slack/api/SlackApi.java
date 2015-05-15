@@ -2,6 +2,7 @@ package ca.nickadams.slack.api;
 
 import android.content.Context;
 
+import ca.nickadams.slack.models.Auth;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 
@@ -27,6 +28,7 @@ public class SlackApi {
     private final Context context;
 
     private String authToken;
+    private Auth auth;
 
     public SlackApi(Context context) {
         this.context = context;
@@ -58,5 +60,13 @@ public class SlackApi {
 
     private String getAuthToken() {
         return authToken;
+    }
+
+    public void setSelf(Auth auth) {
+        this.auth = auth;
+    }
+
+    public Auth getSelf() {
+        return auth;
     }
 }

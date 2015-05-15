@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import ca.nickadams.slack.R;
 import ca.nickadams.slack.fragments.ChannelsListFragment;
 import ca.nickadams.slack.models.Auth;
+import ca.nickadams.slack.utils.UserUtils;
 
 public class ChannelsActivity extends AppCompatActivity {
 
@@ -28,6 +29,8 @@ public class ChannelsActivity extends AppCompatActivity {
         auth = (Auth) getIntent().getSerializableExtra(EXTRA_AUTH);
 
         getSupportActionBar().setTitle(auth.team);
+
+        UserUtils.loadUsers(this);
 
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.frame_content, ChannelsListFragment.newInstance()).commit();

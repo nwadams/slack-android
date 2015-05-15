@@ -11,4 +11,7 @@ public class Auth extends BaseModel implements Serializable {
 
     @SerializedName("user")
     public String user;
+
+    @SerializedName("user_id")
+    public String userId;
 }

@@ -11,7 +11,10 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import ca.nickadams.slack.R;
+import ca.nickadams.slack.api.SlackApi;
+import ca.nickadams.slack.data.SlackData;
 import ca.nickadams.slack.models.Message;
+import ca.nickadams.slack.models.User;
 
 public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHolder>{
 
@@ -30,7 +33,9 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         Message message = messages.get(position);
 
-        viewHolder.userTextView.setText(message.userId); // todo get users
+        User user = SlackData.getInstance(viewHolder.itemView.getContext()).getUserForId(message.userId);
+
+        viewHolder.userTextView.setText(user != null ? user.name : "unknown user");
         viewHolder.messageTextView.setText(message.text != null ? message.text : message.type);
     }
 
@@ -42,7 +47,7 @@ public class MessagesAdapter extends RecyclerView.Adapter<MessagesAdapter.ViewHo
     public void addMessage(String messageText) {
         Message message = new Message();
         message.type = "message";
-        message.userId = "1";
+        message.userId = SlackApi.getInstance().getSelf().userId;
         message.text = messageText;
 
         messages.add(0, message);

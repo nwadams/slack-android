@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void success(Auth auth, Response response) {
                 if (auth.ok) {
+                    SlackApi.getInstance(MainActivity.this).setSelf(auth);
                     startActivity(ChannelsActivity.intentForAuth(MainActivity.this, auth));
                     Toast.makeText(MainActivity.this, auth.team + " " + auth.user, Toast.LENGTH_SHORT).show();
                     finish();

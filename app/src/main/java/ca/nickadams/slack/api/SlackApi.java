@@ -42,6 +42,6 @@ public class SlackApi {
     }
 
     private String getAuthToken() {
-        return "xoxp-2171059446-2184258110-4854410584-1f90dd";
+        return "revoked";
     }
 }

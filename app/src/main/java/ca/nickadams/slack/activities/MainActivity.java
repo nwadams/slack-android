@@ -2,10 +2,16 @@ package ca.nickadams.slack.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import ca.nickadams.slack.R;
 import ca.nickadams.slack.api.SlackApi;
 import ca.nickadams.slack.models.Auth;
@@ -16,27 +22,53 @@ import retrofit.client.Response;
 
 public class MainActivity extends AppCompatActivity {
 
+    @InjectView(R.id.input_auth_token)
+    EditText authTokenEditText;
+    @InjectView(R.id.btn_submit_token)
+    Button submitAuthTokenButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.inject(this);
+
+        submitAuthTokenButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String token = authTokenEditText.getText().toString();
+                if (!TextUtils.isEmpty(token)) {
+                    SlackApi.getInstance(v.getContext()).setAuthToken(token);
+                    testAuthToken();
+                }
+            }
+        });
+
+        if (SlackApi.getInstance(this).hasToken()) {
+            testAuthToken();
+        }
+    }
+
+    private void testAuthToken() {
         SlackApi.getInstance(this).getSlackService().testAuth(new Callback<Auth>() {
             @Override
             public void success(Auth auth, Response response) {
-                Toast.makeText(MainActivity.this, auth.team + " " + auth.user, Toast.LENGTH_SHORT).show();
-
                 if (auth.ok) {
                     startActivity(ChannelsActivity.intentForAuth(MainActivity.this, auth));
+                    Toast.makeText(MainActivity.this, auth.team + " " + auth.user, Toast.LENGTH_SHORT).show();
                     finish();
+                } else {
+                    Toast.makeText(MainActivity.this, R.string.auth_token_invalid, Toast.LENGTH_SHORT).show();
+                    SlackApi.getInstance(MainActivity.this).setAuthToken(null);
                 }
             }
 
             @Override
             public void failure(RetrofitError retrofitError) {
-                Toast.makeText(MainActivity.this, retrofitError.getMessage(), Toast.LENGTH_SHORT).show();
-
-                // show box to enter auth token
+                Toast.makeText(MainActivity.this, R.string.auth_token_invalid, Toast.LENGTH_SHORT).show();
+                SlackApi.getInstance(MainActivity.this).setAuthToken(null);
+                authTokenEditText.setText("");
             }
         });
     }
